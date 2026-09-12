@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "GiroSP",
+    "slug": "girosp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"]
+  }
+}
