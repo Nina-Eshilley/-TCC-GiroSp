@@ -7,7 +7,7 @@ import { AttendanceButton } from '../components/AttendanceButton';
 import { CommentsModal } from '../components/CommentsModal';
 import { EventHeader } from '../components/EventHeader';
 import { EventImageCarousel } from '../components/EventImageCarousel';
-import { event } from '../data/event';
+import { event } from '../../../data/event';
 
 const initialComments = [];
 const commentsEndpoint = process.env.EXPO_PUBLIC_API_URL
