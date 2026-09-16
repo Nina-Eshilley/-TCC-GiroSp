@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /usuarios/:id — busca um
+// GET /usuarios/:id — busca um usuario
 router.get('/:id', async (req, res) => {
   try {
     const [rows] = await pool.execute(
@@ -67,7 +67,7 @@ router.put('/:id', async (req, res) => {
   try {
     const { nome, email, senha, preferencias } = req.body;
 
-    // monta o UPDATE dinamicamente (só atualiza o que veio)
+    // UPDATE (só atualiza oq veio)
     const campos = [];
     const valores = [];
 
@@ -109,7 +109,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /usuarios/:id — deleta
+// DELETE /usuarios/:id 
 router.delete('/:id', async (req, res) => {
   try {
     await pool.execute('DELETE FROM Usuario WHERE id_usuario = ?', [req.params.id]);

@@ -18,9 +18,9 @@ import FormArtistaScreen from './src/features/artista/screens/FormArtistaScreen'
 
 const initialProfile = {
   id: 1,
-  name: 'Sabrina',
-  username: '@sabri',
-  bio: 'A cultura alimenta a quebrada',
+  name: 'Usuário',
+  username: '@usuario',
+  bio: '',
   followers: 0,
   following: 0,
   events: 0,
@@ -36,7 +36,31 @@ export default function App() {
   const [savedEvents, setSavedEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState([]);
 
-  // ===== TELAS =====
+  function irPara(destino) {
+    if (destino === 'profile') setScreen('perfil');
+    else if (destino === 'home') setScreen('eventos');
+    else if (destino === 'activities') setScreen('atividades');
+  }
+
+  function alternarSalvo(evento) {
+    setSavedEvents((atual) =>
+      atual.some((e) => e.id === evento.id)
+        ? atual.filter((e) => e.id !== evento.id)
+        : [...atual, evento]
+    );
+  }
+
+  function alternarCurtido(evento) {
+    setLikedEvents((atual) =>
+      atual.some((e) => e.id === evento.id)
+        ? atual.filter((e) => e.id !== evento.id)
+        : [...atual, evento]
+    );
+  }
+
+  function criarEvento(evento) {
+    setEvents((atual) => [{ ...evento, id: Date.now() }, ...atual]);
+  }
 
   if (screen === 'eventos') {
     return (
@@ -57,15 +81,11 @@ export default function App() {
           events={events}
           savedEvents={savedEvents}
           likedEvents={likedEvents}
-          onCreateEvent={(e) => setEvents((c) => [{ ...e, id: Date.now() }, ...c])}
-          onToggleSave={(ev) => setSavedEvents((c) => c.some((x) => x.id === ev.id) ? c.filter((x) => x.id !== ev.id) : [...c, ev])}
-          onToggleLike={(ev) => setLikedEvents((c) => c.some((x) => x.id === ev.id) ? c.filter((x) => x.id !== ev.id) : [...c, ev])}
+          onCreateEvent={criarEvento}
+          onToggleSave={alternarSalvo}
+          onToggleLike={alternarCurtido}
           onOpenActivities={() => setScreen('atividades')}
-          onNavigate={(dest) => {
-            if (dest === 'profile') setScreen('perfil');
-            else if (dest === 'home') setScreen('eventos');
-            else if (dest === 'activities') setScreen('atividades');
-          }}
+          onNavigate={irPara}
         />
       </SafeAreaView>
     );
@@ -78,16 +98,11 @@ export default function App() {
         <ActivitiesScreen
           activities={[]}
           onBack={() => setScreen('perfil')}
-          onNavigate={(dest) => {
-            if (dest === 'profile') setScreen('perfil');
-            else if (dest === 'home') setScreen('eventos');
-          }}
+          onNavigate={irPara}
         />
       </SafeAreaView>
     );
   }
-
-  // ===== USUÁRIOS =====
 
   if (screen === 'listaUsuarios') {
     return (
@@ -95,8 +110,14 @@ export default function App() {
         <StatusBar barStyle="dark-content" />
         <ListaUsuariosScreen
           onVoltar={() => setScreen('menu')}
-          onNovo={() => { setUsuarioEditando(null); setScreen('formUsuario'); }}
-          onEditar={(u) => { setUsuarioEditando(u); setScreen('formUsuario'); }}
+          onNovo={() => {
+            setUsuarioEditando(null);
+            setScreen('formUsuario');
+          }}
+          onEditar={(u) => {
+            setUsuarioEditando(u);
+            setScreen('formUsuario');
+          }}
         />
       </SafeAreaView>
     );
@@ -115,16 +136,20 @@ export default function App() {
     );
   }
 
-  // ===== ARTISTAS =====
-
   if (screen === 'listaArtistas') {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle="dark-content" />
         <ListaArtistasScreen
           onVoltar={() => setScreen('menu')}
-          onNovo={() => { setArtistaEditando(null); setScreen('formArtista'); }}
-          onEditar={(a) => { setArtistaEditando(a); setScreen('formArtista'); }}
+          onNovo={() => {
+            setArtistaEditando(null);
+            setScreen('formArtista');
+          }}
+          onEditar={(a) => {
+            setArtistaEditando(a);
+            setScreen('formArtista');
+          }}
         />
       </SafeAreaView>
     );
@@ -143,25 +168,22 @@ export default function App() {
     );
   }
 
-  // ===== MENU PRINCIPAL (tela inicial de teste) =====
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.menu}>
-        <Text style={styles.menuTitulo}>GiroSP - Prévia</Text>
+        <Text style={styles.menuTitulo}>GiroSP</Text>
 
-        <MenuBotao label="👤 Usuários" onPress={() => setScreen('listaUsuarios')} />
-        <MenuBotao label="🎨 Artistas" onPress={() => setScreen('listaArtistas')} />
-        <MenuBotao label="🎉 Eventos" onPress={() => setScreen('eventos')} />
-        <MenuBotao label="👤 Perfil" onPress={() => setScreen('perfil')} />
+        <MenuBotao label="Usuários" onPress={() => setScreen('listaUsuarios')} />
+        <MenuBotao label="Artistas" onPress={() => setScreen('listaArtistas')} />
+        <MenuBotao label="Eventos" onPress={() => setScreen('eventos')} />
+        <MenuBotao label="Perfil" onPress={() => setScreen('perfil')} />
       </View>
     </SafeAreaView>
   );
 }
 
 function MenuBotao({ label, onPress }) {
-  const { TouchableOpacity, Text } = require('react-native');
   return (
     <TouchableOpacity style={styles.menuBotao} onPress={onPress}>
       <Text style={styles.menuBotaoTexto}>{label}</Text>
@@ -172,7 +194,13 @@ function MenuBotao({ label, onPress }) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
   menu: { flex: 1, justifyContent: 'center', padding: 22 },
-  menuTitulo: { fontSize: 26, fontWeight: '800', color: '#7B20FF', marginBottom: 30, textAlign: 'center' },
+  menuTitulo: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#7B20FF',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
   menuBotao: {
     backgroundColor: '#fff',
     borderWidth: 1,

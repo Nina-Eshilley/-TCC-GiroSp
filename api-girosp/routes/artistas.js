@@ -3,7 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
-// GET /artistas — lista todos
+// GET /artistas 
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(
